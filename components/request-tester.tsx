@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 export async function RequestTester() {
 
     async function getRoom(roomId: number) {
@@ -25,7 +26,7 @@ export async function RequestTester() {
         }
     }    
 
-    const response = await getRoom(103);
+    const response = await getRoom(101);
     console.log(response)
 
     return <div></div>
