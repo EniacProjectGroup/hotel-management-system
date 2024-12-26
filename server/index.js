@@ -48,7 +48,8 @@ app.use("/api-docs", swaggerUI.serve, swaggerUI.setup(swaggerDocs));
  *             roomType_name: { type: string }
  *             roomType_description: { type: string }
  *             services: { type: string }
- *             available: { type: boolean }
+ *             room_available: { type: boolean }
+ *             room_image: { type: string }
  *     responses:
  *       200:
  *         description: Room added successfully
@@ -200,6 +201,7 @@ app.use("/api-docs", swaggerUI.serve, swaggerUI.setup(swaggerDocs));
  *             staff_entry_date: { type: string, format: date }
  *             staffType_name: { type: string }
  *             staffType_description: { type: string }
+ *             staff_image: { type: string }
  *     responses:
  *       200:
  *         description: Staff added successfully
@@ -587,13 +589,14 @@ async function setupApp() {
       roomType_name,
       roomType_description,
       services,
-      available,
+      room_available,
+      room_image,
     } = req.body;
 
     try {
       await pgClient.query(
         `
-          select add_room('${room_id}', '${roomType_name}', '${roomType_description}', '${services}', ${available})`
+          SELECT add_room('${room_id}', '${roomType_name}', '${roomType_description}', '${services}', ${room_available}, '${room_image}');`
       );
       res.status(200).send("Room added successfully");
     } catch (err) {
@@ -745,13 +748,14 @@ async function setupApp() {
       staff_entry_date,
       staffType_name,
       staffType_description,
+      staff_image,
     } = req.body;
 
     try {
       await pgClient.query(
         `
-            select add_staff(
-                '${staff_id}', '${staff_name}', '${staff_surname}', '${staff_phonenumber}', '${staff_citizenship}', '${staff_citizenship_id}', '${staff_passport_id}', '${staff_birthdate}', '${staff_address}', ${staff_salary}, '${staff_entry_date}', '${staffType_name}', '${staffType_description}'
+            SELECT add_staff(
+                '${staff_id}', '${staff_name}', '${staff_surname}', '${staff_phonenumber}', '${staff_citizenship}', '${staff_citizenship_id}', '${staff_passport_id}', '${staff_birthdate}', '${staff_address}', ${staff_salary}, '${staff_entry_date}', '${staffType_name}', '${staffType_description}', decode('${staff_image}', 'base64')'
             )`
       );
       res.status(200).send("Staff added successfully");
